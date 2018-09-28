@@ -217,7 +217,7 @@ public class SubscribeClient extends Thread {
                     return;
                 }
                 
-                this.recieverClient = new RecieverClient(this.pubServerEndpoint, this.listeners, this.dtsId);
+                this.recieverClient = new RecieverClient(this.pubServerEndpoint, this.listeners, this.dtsId, this.proxy);
                 this.recieverClient.start();
 
                 while (!isExit) {

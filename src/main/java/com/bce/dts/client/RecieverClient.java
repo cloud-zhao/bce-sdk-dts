@@ -1,5 +1,7 @@
 package com.bce.dts.client;
 
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.net.Socket;
 import java.util.List;
 
@@ -109,8 +111,14 @@ public class RecieverClient extends Thread {
      * retry times for InvalidProtocolBufferException
      */
     private int invalidProtocolRetry;
-    
+
+    private Proxy proxy;
+
     RecieverClient(PubserverEndpoint pEndpoint, List<ConsumerListener> listeners, String dtsId) {
+        this(pEndpoint, listeners, dtsId, null);
+    }
+    
+    RecieverClient(PubserverEndpoint pEndpoint, List<ConsumerListener> listeners, String dtsId, Proxy proxy) {
         this.pubServerEndpoint = pEndpoint;
         this.listeners = listeners;
         this.dtsId = dtsId;
@@ -123,6 +131,7 @@ public class RecieverClient extends Thread {
         this.lastPosition = "";
         this.lastTimestamp = "";
         this.invalidProtocolRetry = 0;
+        this.proxy = proxy;
     }
 
     public void run() {
@@ -233,10 +242,17 @@ public class RecieverClient extends Thread {
     private boolean connectPubServer() throws Exception {
         int retry = 0;
         String errmsg = null;
+        String host = this.pubServerEndpoint.getStrIp();
+        int port = this.pubServerEndpoint.getIntPort();
         
         while (retry++ < MAX_TIMES_RECONNECT) {
             try {
-                socket = new Socket(this.pubServerEndpoint.getStrIp(), this.pubServerEndpoint.getIntPort());
+                if(null != proxy) {
+                    socket = new Socket(proxy);
+                    socket.connect(new InetSocketAddress(host, port));
+                }else {
+                    socket = new Socket(host, port);
+                }
                 output = CodedOutputStream.newInstance(socket.getOutputStream());
                 input = CodedInputStream.newInstance(socket.getInputStream());
                 logger.debug("RecieverClient: connect to pubServer successfully");
