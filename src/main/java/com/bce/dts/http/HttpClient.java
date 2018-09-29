@@ -24,6 +24,8 @@ import org.apache.http.message.BasicNameValuePair;
 import com.bce.dts.auth.IAMService;
 import com.bce.dts.consumer.RegionContext;
 import com.bce.dts.endpoints.ControllerEndpoint;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * http client handler for executing get/post request
@@ -35,10 +37,12 @@ import com.bce.dts.endpoints.ControllerEndpoint;
 @SuppressWarnings({ "deprecation" })
 public class HttpClient {
 
+    private static final Logger logger = LoggerFactory.getLogger(HttpClient.class);
+
     private static final String DefaultEncoding = "UTF-8";
     private static final int DefaultConnectionTimeout = 30000;
     private static final int DefaultSocketTimeout = 30000;
-    private final org.apache.http.client.HttpClient client;
+    private org.apache.http.client.HttpClient client;
 
     private RegionContext regionContext;
 
@@ -64,6 +68,7 @@ public class HttpClient {
         }
 
         this.client = builder.setDefaultRequestConfig(config).build();
+        logger.error("init: " + proxy.toString());
     }
 
     public HttpClient(RegionContext regionContext) {
