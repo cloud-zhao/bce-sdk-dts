@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.http.HttpHost;
 import org.apache.http.client.config.RequestConfig;
@@ -16,6 +17,7 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingClientConnectionManager;
 import org.apache.http.message.BasicNameValuePair;
 
@@ -36,27 +38,32 @@ public class HttpClient {
     private static final String DefaultEncoding = "UTF-8";
     private static final int DefaultConnectionTimeout = 30000;
     private static final int DefaultSocketTimeout = 30000;
-    private static final org.apache.http.client.HttpClient client;
-
-    private Proxy proxy;
+    private final org.apache.http.client.HttpClient client;
 
     private RegionContext regionContext;
 
-    static {
-        PoolingClientConnectionManager cm = new PoolingClientConnectionManager();
-        client = new DefaultHttpClient(cm);
-        client.getParams().setParameter("http.connection.timeout", Integer.valueOf(DefaultConnectionTimeout));
-        client.getParams().setParameter("http.socket.timeout", Integer.valueOf(DefaultSocketTimeout));
-    }
 
     /**
      * constructor
      * 
-     * @param regionContext
+     * @param  regionContext proxy
      */
     public HttpClient(RegionContext regionContext, Proxy proxy) {
         this.regionContext = regionContext;
-        this.proxy = proxy;
+        HttpClientBuilder builder;
+        RequestConfig config = RequestConfig.custom()
+                .setConnectionRequestTimeout(DefaultConnectionTimeout)
+                .setSocketTimeout(DefaultSocketTimeout)
+                .setConnectTimeout(DefaultConnectionTimeout).build();
+        if (null != proxy) {
+            InetSocketAddress inetSocketAddress = (InetSocketAddress) proxy.address();
+            HttpHost host = new HttpHost(inetSocketAddress.getHostName(), inetSocketAddress.getPort());
+            builder = HttpClientBuilder.create().setProxy(host);
+        } else {
+            builder = HttpClientBuilder.create();
+        }
+
+        this.client = builder.setDefaultRequestConfig(config).build();
     }
 
     public HttpClient(RegionContext regionContext) {
@@ -138,12 +145,6 @@ public class HttpClient {
         String path = mapHeader.get("path");
         mapHeader.remove("path");
         HttpGet method = new HttpGet(path);
-        if(null != this.proxy) {
-            InetSocketAddress inetSocketAddress = (InetSocketAddress) this.proxy.address();
-            HttpHost host = new HttpHost(inetSocketAddress.getHostName(), inetSocketAddress.getPort());
-            RequestConfig config = RequestConfig.custom().setProxy(host).build();
-            method.setConfig(config);
-        }
 
         if (mapHeader != null) {
             for (Map.Entry<String, String> entry : mapHeader.entrySet()) {
