@@ -47,7 +47,7 @@ public class ConsumerClientImpl implements ConsumerClient {
 
     public ConsumerClientImpl(RegionContext regionContext, Proxy proxy) {
         this.listeners = new ArrayList<ConsumerListener>();
-        this.httpClient = new HttpClient(regionContext);
+        this.httpClient = new HttpClient(regionContext, proxy);
         this.proxy = proxy;
     }
 

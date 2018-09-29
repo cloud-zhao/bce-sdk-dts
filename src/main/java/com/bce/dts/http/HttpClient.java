@@ -2,12 +2,16 @@ package com.bce.dts.http;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.http.HttpHost;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -34,6 +38,8 @@ public class HttpClient {
     private static final int DefaultSocketTimeout = 30000;
     private static final org.apache.http.client.HttpClient client;
 
+    private Proxy proxy;
+
     private RegionContext regionContext;
 
     static {
@@ -48,8 +54,13 @@ public class HttpClient {
      * 
      * @param regionContext
      */
-    public HttpClient(RegionContext regionContext) {
+    public HttpClient(RegionContext regionContext, Proxy proxy) {
         this.regionContext = regionContext;
+        this.proxy = proxy;
+    }
+
+    public HttpClient(RegionContext regionContext) {
+        this(regionContext, null);
     }
 
     /**
@@ -127,6 +138,12 @@ public class HttpClient {
         String path = mapHeader.get("path");
         mapHeader.remove("path");
         HttpGet method = new HttpGet(path);
+        if(null != this.proxy) {
+            InetSocketAddress inetSocketAddress = (InetSocketAddress) this.proxy.address();
+            HttpHost host = new HttpHost(inetSocketAddress.getHostName(), inetSocketAddress.getPort());
+            RequestConfig config = RequestConfig.custom().setProxy(host).build();
+            method.setConfig(config);
+        }
 
         if (mapHeader != null) {
             for (Map.Entry<String, String> entry : mapHeader.entrySet()) {
