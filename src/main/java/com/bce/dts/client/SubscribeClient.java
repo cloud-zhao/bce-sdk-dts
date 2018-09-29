@@ -158,9 +158,9 @@ public class SubscribeClient extends Thread {
         while (retry++ < MAX_TIMES_RECONNECT) { 
             try {
                 if ( null != proxy ) {
+                    logger.debug("Use proxy: " + proxy.toString());
                     socket = new Socket(proxy);
                     socket.connect(new InetSocketAddress(host, port));
-                    logger.error("sub proxy: " + this.proxy.toString());
                 } else {
                     socket = new Socket(host, port);
                 }

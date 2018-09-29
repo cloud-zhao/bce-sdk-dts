@@ -65,7 +65,7 @@ public class HttpClient {
         }
 
         this.client = builder.setDefaultRequestConfig(config).build();
-        logger.error("init: " + proxy);
+        logger.debug("init: " + proxy);
     }
 
     public HttpClient(RegionContext regionContext) {
