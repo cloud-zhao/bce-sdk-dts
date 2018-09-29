@@ -160,6 +160,7 @@ public class SubscribeClient extends Thread {
                 if ( null != proxy ) {
                     socket = new Socket(proxy);
                     socket.connect(new InetSocketAddress(host, port));
+                    logger.error("sub proxy: " + this.proxy.toString());
                 } else {
                     socket = new Socket(host, port);
                 }
