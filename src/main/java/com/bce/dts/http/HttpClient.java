@@ -9,16 +9,13 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.http.HttpHost;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.conn.PoolingClientConnectionManager;
 import org.apache.http.message.BasicNameValuePair;
 
 import com.bce.dts.auth.IAMService;
@@ -68,7 +65,7 @@ public class HttpClient {
         }
 
         this.client = builder.setDefaultRequestConfig(config).build();
-        logger.error("init: " + proxy.toString());
+        logger.error("init: " + proxy);
     }
 
     public HttpClient(RegionContext regionContext) {
