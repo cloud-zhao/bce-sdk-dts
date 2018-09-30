@@ -169,7 +169,6 @@ public class RecieverClient extends Thread {
                         break;
                     }
                 }
-                continue;
             } catch (Exception e) {
                 logger.error(e.getMessage());
                 // if exception when communication with pubserver transmission thread, retry to connect
