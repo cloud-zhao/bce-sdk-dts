@@ -208,6 +208,7 @@ public class SubscribeClient extends Thread {
                     return;
                 }
                 // send auth to pubserver
+                logger.debug("send auth to pubserver");
                 if (!this.sendAuth()) {
                     logger.error("SubscribeClient: send auth to pubserver failed");
                     return;
@@ -306,12 +307,15 @@ public class SubscribeClient extends Thread {
                     .build();
 
             // send auth message to pubserver
+            logger.debug("send auth message to pubserver " + auth.toString());
             NetIoHelper.sendMessage(auth, this.output);
 
             // recv ack message from pubserver
+            logger.debug("recv ack message from pubserver");
             Ack ack = (Ack) NetIoHelper.recieveMessage(MsgType.ACK_VALUE, this.input);
             
             // set client state
+            logger.debug("set client state");
             if (ack.getAckType() == AckType.AUTH_OK) {
                 this.clientState = ClientState.AUTH_OK;
             }
