@@ -252,6 +252,7 @@ public class SubscribeClient extends Thread {
         this.recieverClient.clientExit();
         this.recieverClient.join();
         this.isExit = true;
+        this.interrupt();
         this.join();
         logger.debug("SubscribeClient: subscibe client thread exits");
     }

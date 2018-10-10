@@ -229,6 +229,7 @@ public class RecieverClient extends Thread {
     public void clientExit() throws Exception {
         logger.debug("RecieverClient: notify reciever client thread to exit");
         this.isExit = true;
+        this.interrupt();
         this.join();
         logger.debug("RecieverClient: reciever client thread exits");
     }
