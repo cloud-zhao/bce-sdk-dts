@@ -296,7 +296,9 @@ public class SubscribeClient extends Thread {
     private boolean sendAuth() {
         try {
             String url = "/pri-api/v1/dts/iamAuth";
+            logger.debug("create header");
             Map<String, String> httpHeader = this.httpClient.createHeader(url, MethodType.POST);
+            logger.debug("new builder");
             Auth auth = Auth.newBuilder()
                     .setHost(httpHeader.get("host"))
                     .setBceDate(httpHeader.get("x-bce-date"))
