@@ -11,6 +11,8 @@ import com.bce.dts.protobuf.EndOuterClass.End;
 import com.bce.dts.protobuf.EventOuterClass.Event;
 import com.google.protobuf.CodedInputStream;
 import com.google.protobuf.CodedOutputStream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class NetIoHelper {
     /**
@@ -21,6 +23,8 @@ public class NetIoHelper {
      * publish server port
      */
     public static final int PUBSERVER_PORT = 8765;
+
+    private static final Logger logger = LoggerFactory.getLogger(NetIoHelper.class);
 
     /**
      * check magic header of recieved message
@@ -75,11 +79,16 @@ public class NetIoHelper {
      */
     public static void sendMessage(Connect connect, CodedOutputStream codedOutput) throws IOException {
         // TODO Auto-generated method stub
-        
+
+        logger.debug("send message connect output");
         final int serialized = connect.getSerializedSize();
+        logger.debug("codeoutput " + MAGIC_HEADER);
         codedOutput.writeFixed32NoTag(MAGIC_HEADER);
+        logger.debug("codeOutput " + serialized);
         codedOutput.writeFixed32NoTag(serialized);
+        logger.debug("connect write codeOutput " + connect.toString());
         connect.writeTo(codedOutput);
+        logger.debug("codeOutput flush");
         codedOutput.flush();
     }
     
