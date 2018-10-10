@@ -51,9 +51,12 @@ public class NetIoHelper {
      */
     public static void sendMessage(Auth auth, CodedOutputStream codedOutput) throws IOException {
         // TODO Auto-generated method stub
+        logger.debug("send message codeOutput");
         final int serialized = auth.getSerializedSize();
         codedOutput.writeFixed32NoTag(MAGIC_HEADER);
+        logger.debug("codeOutput " + serialized);
         codedOutput.writeFixed32NoTag(serialized);
+        logger.debug("codeOutput " + auth.toString());
         auth.writeTo(codedOutput);
         codedOutput.flush();
     }

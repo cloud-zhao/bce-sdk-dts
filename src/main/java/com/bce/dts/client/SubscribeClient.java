@@ -296,7 +296,9 @@ public class SubscribeClient extends Thread {
     private boolean sendAuth() {
         try {
             String url = "/pri-api/v1/dts/iamAuth";
+            logger.debug("create httpHeader");
             Map<String, String> httpHeader = this.httpClient.createHeader(url, MethodType.POST);
+            logger.debug(httpHeader.toString());
             Auth auth = Auth.newBuilder()
                     .setHost(httpHeader.get("host"))
                     .setBceDate(httpHeader.get("x-bce-date"))
@@ -307,6 +309,7 @@ public class SubscribeClient extends Thread {
                     .build();
 
             // send auth message to pubserver
+            logger.debug("send auth message to pubserver");
             NetIoHelper.sendMessage(auth, this.output);
 
             // recv ack message from pubserver
