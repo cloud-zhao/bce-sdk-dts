@@ -277,6 +277,7 @@ public class RecieverClient extends Thread {
      */
     private boolean sendConnect() {
         try {
+            logger.debug("connect builder");
             Connect connect = Connect.newBuilder()
                     .setType(MsgType.CONNECT)
                     .setHost("")
@@ -284,6 +285,7 @@ public class RecieverClient extends Thread {
                     .setDtsId(this.dtsId)
                     .build();
             // send ack message to pubserver
+            logger.debug("send ack message to pubserver");
             NetIoHelper.sendMessage(connect, this.output);
             return true;
         }
