@@ -88,7 +88,7 @@ public class ConsumerClientImpl implements ConsumerClient {
         // create subscribe client thread to work
         this.subClient = new SubscribeClient(this.httpClient, this.listeners, this.dtsId, this.userId, proxy);
         this.subClient.start();
-        logger.debug("proxy: "+ proxy.toString());
+        logger.debug("proxy: "+ proxy);
     }
     /**
      * wait for stop to consume
